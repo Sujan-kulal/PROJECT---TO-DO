@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Tasks{% endblock %}
+
+{% block content %}
+<div class="task-box">
+    <h2>Your Tasks</h2>
+    <form action="{{ url_for('tasks.add_tasks') }}" method="POST" class="task-form">
+        <input type="text" name="title" placeholder="New Task" required>
+        <button type="submit" class="btn">Add</button>
+    </form>
+    
+    {% if tasks %}
+        <form method="POST" action="{{ url_for('tasks.clear_tasks')}}">
+            <button type="submit" class="btn btn-clear">Clear All Tasks</button>
+        </form>
+    
+        <br>
+
+        <table class="task-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Task</th>
+                    <th>Status</th>
+                    <th>Change</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ task.title }}</td>
+                    <td>
+                        <span class="badge {{ task.status|lower }}">{{ task.status }}</span>
+                    </td>
+                    <td>
+                        <form action="{{ url_for('tasks.toggle_status', task_id=task.id)}}" method="POST">
+                            <button type="submit" class="btn-small">Next</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form method="POST" action="{{ url_for('tasks.remove', task_id=task.id)}}">
+                            <button type="submit" class="btn-rmv">Remove</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+    <p>No Tasks, Add Task</p>
+    {% endif %}
+</div>
+{% endblock%}
